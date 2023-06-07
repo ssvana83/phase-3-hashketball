@@ -1,4 +1,6 @@
-# Write your code below game_hash
+require "pry"
+
+
 def game_hash
   {
     home: {
@@ -126,4 +128,72 @@ def game_hash
   }
 end
 
-# Write code here
+
+#create method(pass in argument) and then access data by invoking game_hash(thats where data is stored)
+#into the method. data shows that you have to get inside game_hash then home, then players, then player name
+#plyers array is where the item is that you need to access. then go through array of players
+#find value of gievn then once find that player object, you can find anything within it.
+#home_or_away nis home or away key
+# def num_points_scored(player_name)
+#   game_hash.each do |home_or_away, team_hash|
+#     team_hash[:players].each do |player_hash|
+#       if player_hash[:player_name] == player_name
+#         return player_hash[:points]
+#       end
+#     end
+#   end
+# end
+#refactored using a helper methods;
+#this method joins all the players together
+def players
+  game_hash[:home][:players].concat(game_hash[:away][:players])
+end
+
+# def find_by_name(player_name)
+#   players.find { |player_hash| player_hash[:player_name] == player_name }
+# end
+
+def num_points_scored(player_name)
+    player = player_stats(player_name)
+    return player&.fetch(:points)
+  end
+
+
+#Same exact code for this one except change from :points to :shoe
+# def shoe_size(player_name)
+#   game_hash.each do |home_or_away, team_hash|
+#     team_hash[:players].each do |player_hash|
+#       if player_hash[:player_name] == player_name
+#         return player_hash[:shoe]
+#       end
+#     end
+#   end
+# end
+
+#refactored using helper method;
+def shoe_size(player_name)
+  player = player_stats(player_name)
+  return player&.fetch(:shoe)
+end
+
+
+      #refactored using helper method;
+def big_shoe_rebounds
+  players.max_by {|player| player[:shoe]}.fetch(:rebounds)
+end
+
+def player_stats(player_name)
+  players.find { |player_hash| player_hash[:player_name] == player_name }
+end
+
+def team_names
+  [game_hash[:home][:team_name], game_hash[:away][:team_name]]
+end
+
+def player_numbers(team_name)
+  game_hash.each do |home_or_away, team_hash|
+    if team_hash[:team_name] == team_name
+      return team_hash[:players].map {|player| player.fetch(:number)}
+    end
+  end
+end
